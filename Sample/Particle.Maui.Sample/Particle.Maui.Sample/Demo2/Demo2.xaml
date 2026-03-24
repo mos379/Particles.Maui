@@ -43,9 +43,11 @@
         <StackLayout Margin="5"
                      Orientation="Horizontal"
                      HorizontalOptions="End"
-                     VerticalOptions="End">
+                     VerticalOptions="End"
+                     BindingContext="{x:Reference MyParticleCanvas}"
+                     x:DataType="forms:ParticleView">
             <Label Text="Debug Info" VerticalOptions="Center" TextColor="Goldenrod" />
-            <Switch IsToggled="{Binding Source={x:Reference MyParticleCanvas}, Path=ShowDebugInfo}" />
+            <Switch IsToggled="{Binding Path=ShowDebugInfo}" />
         </StackLayout>
     </Grid>
 </ContentPage>

@@ -1,6 +1,4 @@
-﻿using SkiaSharp.Views.Maui.Controls;
-using SkiaSharp.Views.Maui.Controls.Compatibility;
-using SkiaSharp.Views.Maui.Controls.Hosting;
+﻿using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace Particle.Maui.Sample
 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui;
+﻿#nullable enable
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
@@ -10,23 +11,11 @@ namespace Particle.Maui.Sample
         public App()
         {
             InitializeComponent();
-
-            MainPage = new AppShell();
         }
 
-        protected override void OnStart()
+        protected override Window CreateWindow(IActivationState? activationState)
         {
-            // Handle when your app starts
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
+            return new Window(new AppShell());
         }
     }
 }
