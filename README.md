@@ -1,7 +1,9 @@
 # Particle.Maui
-A MAUI library to display particles e.g. confetti. Should work on all platforms. Ported from the Xamarin Forms version of this library: https://github.com/mariusmuntean/Particle.Forms
+A .NET MAUI library to display particle effects (confetti, radial bursts, etc.). Works on Android, iOS, macOS, and Windows.
 
-Get it from NuGet [![Nuget](https://img.shields.io/nuget/vpre/particle.forms)](https://www.nuget.org/packages/particle.maui/)
+Originally created as [Particle.Forms](https://github.com/mariusmuntean/Particle.Forms) for Xamarin.Forms by Marius Muntean, then ported to .NET MAUI as [Particle.Maui](https://github.com/jbowmanp1107/Particle.Maui) by Jeff Bowman. This fork maintains the library for .NET 9/.NET 10 and SkiaSharp 3.x.
+
+Get it from NuGet [![Nuget](https://img.shields.io/nuget/vpre/particle.maui)](https://www.nuget.org/packages/particle.maui/)
 
 ## Preview
 <img src="Media/sample.gif" width="640px" />
@@ -76,7 +78,7 @@ These properties aren't bindable.
 ```
 
 ### Tip
-To conserver resources you can pause the particles when the `Page` is about to disappear and resume when the `Page` is about to appear.
+To conserve resources you can pause the particles when the `Page` is about to disappear and resume when the `Page` is about to appear.
 ```csharp
         protected override void OnAppearing()
         {
@@ -92,3 +94,25 @@ To conserver resources you can pause the particles when the `Page` is about to d
             MyParticleCanvas.IsRunning = false;
         }
 ```
+
+## Changelog
+
+### 2.0.0
+- Multi-targets .NET 9 and .NET 10 with SkiaSharp 3.x
+- Replaced deprecated `Device.BeginInvokeOnMainThread` with `MainThread.BeginInvokeOnMainThread`
+- Replaced deprecated `Device.RuntimePlatform` with `DeviceInfo.Platform`
+- Migrated SKMatrix44 APIs to SkiaSharp 3.x static factory methods
+- Migrated debug text rendering to SKFont + SKPaint (SkiaSharp 3.x text API)
+- Removed unused UpgradeAssistant analyzer package
+
+## Support
+
+If you find this project useful, consider supporting development:
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-mos379-yellow?logo=buymeacoffee)](https://buymeacoffee.com/mos379)
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+Copyright (c) 2020 Marius Muntean, 2022 Jeff Bowman, 2026 ITs4BM
