@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`Particle.Maui` is a cross-platform .NET MAUI library for displaying particle effects (confetti, etc.). Originally created as [Particle.Forms](https://github.com/mariusmuntean/Particle.Forms) (Xamarin) by Marius Muntean, ported to MAUI by Jeff Bowman ([Particle.Maui](https://github.com/jbowmanp1107/Particle.Maui)), and now maintained at [mos379/Particles.Maui](https://github.com/mos379/Particles.Maui) for .NET 9/.NET 10. Distributed as the NuGet package `particle.maui`.
+`Particle.Maui` is a cross-platform .NET MAUI library for displaying particle effects (confetti, etc.). Originally created as [Particle.Forms](https://github.com/mariusmuntean/Particle.Forms) (Xamarin) by Marius Muntean, ported to MAUI by Jeff Bowman ([Particle.Maui](https://github.com/jbowmanp1107/Particle.Maui)), and now maintained at [mos379/Particles.Maui](https://github.com/mos379/Particles.Maui) for .NET 9/.NET 10. Distributed as the NuGet package `particles.maui`.
 
 ## Build & Run
 
@@ -80,7 +80,7 @@ Multi-targets .NET 9 and .NET 10:
 
 ### NuGet Package
 
-Building the library project automatically generates the `.nupkg` (`GeneratePackageOnBuild=true`). Current version: 2.0.0. Package ID: `Particle.Maui`.
+Building the library project automatically generates the `.nupkg` (`GeneratePackageOnBuild=true`). Current version: 2.0.0. Package ID: `Particles.Maui`.
 
 ## Performance Notes
 

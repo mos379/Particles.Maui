@@ -3,7 +3,7 @@ A .NET MAUI library to display particle effects (confetti, radial bursts, etc.).
 
 Originally created as [Particle.Forms](https://github.com/mariusmuntean/Particle.Forms) for Xamarin.Forms by Marius Muntean, then ported to .NET MAUI as [Particle.Maui](https://github.com/jbowmanp1107/Particle.Maui) by Jeff Bowman. This fork maintains the library for .NET 9/.NET 10 and SkiaSharp 3.x.
 
-Get it from NuGet [![Nuget](https://img.shields.io/nuget/vpre/particle.maui)](https://www.nuget.org/packages/particle.maui/)
+Get it from NuGet [![Nuget](https://img.shields.io/nuget/vpre/particles.maui)](https://www.nuget.org/packages/particles.maui/)
 
 ## Preview
 <img src="Media/sample.gif" width="640px" />

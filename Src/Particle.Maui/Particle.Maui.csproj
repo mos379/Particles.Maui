@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <LangVersion>14</LangVersion>
-    <PackageId>Particle.Maui</PackageId>
+    <PackageId>Particles.Maui</PackageId>
     <PackageVersion>2.0.0</PackageVersion>
     <Authors>Marius Muntean (original Particle.Forms), Jeff Bowman (MAUI port), ITs4BM (.NET 9/10 maintenance)</Authors>
     <Copyright>2020 Marius Muntean, 2022 Jeff Bowman, 2026 ITs4BM</Copyright>
@@ -10,7 +10,7 @@
     <PackageReleaseNotes>2.0.0: Upgraded to .NET 9/.NET 10 and SkiaSharp 3.x. Forked from jbowmanp1107/Particle.Maui for continued maintenance. Originally ported from Particle.Forms by Marius Muntean.</PackageReleaseNotes>
     <Summary>A .NET MAUI particle effects library (confetti, radial effects). Maintained fork of Particle.Maui, originally ported from Particle.Forms.</Summary>
     <PackageTags>MAUI Particles Confetti CustomControl</PackageTags>
-    <Title>Particle.Maui</Title>
+    <Title>Particles.Maui</Title>
     <Description>MAUI library for displaying particle effects.
 Supports confetti-like falling particles and radiating particles from touch input.
 Can be extended with custom particle generators.
