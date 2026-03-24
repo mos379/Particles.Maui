@@ -4,7 +4,7 @@ namespace Particle.Maui.Particles
 {
     public class RectParticle : ParticleBase
     {
-        protected readonly SKPaint Paint;
+        protected new readonly SKPaint Paint;
         private float _blurFactor;
 
         public RectParticle(SKColor color,

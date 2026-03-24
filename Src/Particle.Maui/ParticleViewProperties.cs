@@ -257,7 +257,7 @@ namespace Particle.Maui
             nameof(UseSKGLView),
             typeof(bool),
             typeof(ParticleView),
-            Device.RuntimePlatform == Device.Android
+            DeviceInfo.Platform == DevicePlatform.Android
         );
 
         /// <summary>

@@ -35,11 +35,15 @@ namespace Particle.Maui
         private long _onPaintPreviousTotalMillis = 0L;
         private long _updateParticlesDurationMillis = 0L;
 
-        private readonly SKPaint _debugInfoPaint = new SKPaint()
+        private readonly SKPaint _debugInfoPaint = new()
         {
             Color = SKColors.LightGreen,
-            TextSize = 32,
             Style = SKPaintStyle.StrokeAndFill
+        };
+
+        private readonly SKFont _debugInfoFont = new()
+        {
+            Size = 32
         };
 
         private bool _showDebugInfo;
@@ -260,7 +264,7 @@ namespace Particle.Maui
                 // Compute particle update duration
                 Interlocked.Exchange(ref _updateParticlesDurationMillis, _stopwatch.ElapsedMilliseconds - _totalElapsedMillis);
 
-                Device.BeginInvokeOnMainThread(() => _invalidateSurface());
+                MainThread.BeginInvokeOnMainThread(() => _invalidateSurface());
             });
             anim.Commit(this, ParticleAnimationName, length: 1000u, rate: AnimationRateMillis, repeat: () => IsActive);
         }
@@ -314,16 +318,18 @@ namespace Particle.Maui
             {
                 var canvasSize = CanvasSize;
                 var scale = (float) (canvasSize.Width / this.Width);
-                _debugInfoPaint.TextSize = 24.0f * scale;
+                _debugInfoFont.Size = 24.0f * scale;
 
                 canvas.DrawText($"Frame painted every {_stopwatch.ElapsedMilliseconds - _onPaintPreviousTotalMillis:F1}ms",
                     canvasSize.Width * 0.05f,
                     canvasSize.Height * 0.05f,
+                    _debugInfoFont,
                     _debugInfoPaint);
 
                 canvas.DrawText($"Particles updated every {Interlocked.Read(ref _updateParticlesDurationMillis):F1}ms",
                     canvasSize.Width * 0.05f,
-                    canvasSize.Height * 0.05f + (_debugInfoPaint.FontMetrics.XHeight * scale),
+                    canvasSize.Height * 0.05f + (_debugInfoFont.Metrics.XHeight * scale),
+                    _debugInfoFont,
                     _debugInfoPaint);
 
                 _onPaintPreviousTotalMillis = _stopwatch.ElapsedMilliseconds;

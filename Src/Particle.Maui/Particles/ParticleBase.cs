@@ -12,10 +12,10 @@ namespace Particle.Maui.Particles
         private long _internalAbsoluteMillis = 0;
         
         // Caching these matrices speeds up the Update() function a lot
-        private SKMatrix44 _totalRotationMatrix = new SKMatrix44();
-        private SKMatrix44 _xAxisRotationMatrix = new SKMatrix44();
-        private SKMatrix44 _yAxisRotationMatrix = new SKMatrix44();
-        private SKMatrix44 _zAxisRotationMatrix = new SKMatrix44();
+        private SKMatrix44 _totalRotationMatrix = SKMatrix44.CreateIdentity();
+        private SKMatrix44 _xAxisRotationMatrix = SKMatrix44.CreateIdentity();
+        private SKMatrix44 _yAxisRotationMatrix = SKMatrix44.CreateIdentity();
+        private SKMatrix44 _zAxisRotationMatrix = SKMatrix44.CreateIdentity();
 
         public ParticleBase(SKPoint3 rotationSpeed, float translationSpeed, float direction, SKPoint3 orientation, SKPoint position, SKSize size)
         {
@@ -87,17 +87,14 @@ namespace Particle.Maui.Particles
                 Z = _internalAbsoluteMillis * 0.001f * RotationSpeed.Z
             };
 
-            _totalRotationMatrix.SetIdentity();
-            
-            _xAxisRotationMatrix.SetRotationAboutDegrees(1, 0, 0, Orientation.X);
-            _totalRotationMatrix.PostConcat(_xAxisRotationMatrix);
-            
-            _yAxisRotationMatrix.SetRotationAboutDegrees(0, 1, 0, Orientation.Y);
-            _totalRotationMatrix.PostConcat(_yAxisRotationMatrix);
-            
-            _zAxisRotationMatrix.SetRotationAboutDegrees(0, 0, 1, Orientation.Z);
-            _totalRotationMatrix.PostConcat(_zAxisRotationMatrix);
-            
+            _xAxisRotationMatrix = SKMatrix44.CreateRotationDegrees(1, 0, 0, Orientation.X);
+            _yAxisRotationMatrix = SKMatrix44.CreateRotationDegrees(0, 1, 0, Orientation.Y);
+            _zAxisRotationMatrix = SKMatrix44.CreateRotationDegrees(0, 0, 1, Orientation.Z);
+            _totalRotationMatrix = SKMatrix44.CreateIdentity()
+                .PostConcat(_xAxisRotationMatrix)
+                .PostConcat(_yAxisRotationMatrix)
+                .PostConcat(_zAxisRotationMatrix);
+
             TransformationMatrix = TransformationMatrix.PostConcat(_totalRotationMatrix.Matrix);
 
             // Translate back

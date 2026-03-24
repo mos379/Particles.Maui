@@ -1,66 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <LangVersion>10</LangVersion>
+    <LangVersion>14</LangVersion>
     <PackageId>Particle.Maui</PackageId>
-    <PackageVersion>1.0.3</PackageVersion>
-    <Authors>Jeff Bowman</Authors>
-    <Copyright>2022</Copyright>
-    <Owners>Jeff Bowman</Owners>
-    <PackageProjectUrl>https://github.com/jbowmanp1107/Particle.Maui</PackageProjectUrl>
+    <PackageVersion>2.0.0</PackageVersion>
+    <Authors>Marius Muntean (original Particle.Forms), Jeff Bowman (MAUI port), ITs4BM (.NET 9/10 maintenance)</Authors>
+    <Copyright>2020 Marius Muntean, 2022 Jeff Bowman, 2026 ITs4BM</Copyright>
+    <PackageProjectUrl>https://github.com/mos379/Particles.Maui</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>See the API reference: https://github.com/jbowmanp1107/Particle.Maui#api-reference</PackageReleaseNotes>
-    <Summary>A MAUI library to display particles e.g. confetti. Should work on all platforms.</Summary>
+    <PackageReleaseNotes>2.0.0: Upgraded to .NET 9/.NET 10 and SkiaSharp 3.x. Forked from jbowmanp1107/Particle.Maui for continued maintenance. Originally ported from Particle.Forms by Marius Muntean.</PackageReleaseNotes>
+    <Summary>A .NET MAUI particle effects library (confetti, radial effects). Maintained fork of Particle.Maui, originally ported from Particle.Forms.</Summary>
     <PackageTags>MAUI Particles Confetti CustomControl</PackageTags>
     <Title>Particle.Maui</Title>
-    <Description>MAUI library for displaying particles.
+    <Description>MAUI library for displaying particle effects.
 Supports confetti-like falling particles and radiating particles from touch input.
-Can be extended with custom particle generators.</Description>
+Can be extended with custom particle generators.
+Originally created as Particle.Forms (Xamarin) by Marius Muntean, ported to MAUI by Jeff Bowman, now maintained for .NET 9 and .NET 10.</Description>
     <UseMaui>true</UseMaui>
-    <TargetFrameworks>net6.0-android;net6.0-ios;net6.0-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/jbowmanp1107/Particle.Maui</RepositoryUrl>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-android|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-android|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-ios|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-maccatalyst|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-maccatalyst|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-windows|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.2</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-windows|AnyCPU'">
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.2</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-windows10.0.19041.0|AnyCPU'">
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-windows10.0.19041.0|AnyCPU'">
-    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
+    <RepositoryUrl>https://github.com/mos379/Particles.Maui</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\README.md">
@@ -69,11 +31,9 @@ Can be extended with custom particle generators.</Description>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.346202">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.3" />
-    <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.3" />
-    <PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.3" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETCoreApp' And $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= '10.0'" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETCoreApp' And $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; '10.0'" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.2" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.2" />
   </ItemGroup>
 </Project>
