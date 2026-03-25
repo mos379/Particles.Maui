@@ -194,3 +194,6 @@ FakesAssemblies/
 
 .vscode/settings.json
 Sample/Particle.Forms.Sample/.idea
+
+# Claude Code
+.claude/
