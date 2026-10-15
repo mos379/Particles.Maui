@@ -118,6 +118,27 @@ To conserve resources you can pause the particles when the `Page` is about to di
         }
 ```
 
+## Releasing
+
+Tag the commit and the workflow does the rest:
+
+```bash
+git tag v2.1.0
+git push origin v2.1.0
+```
+
+`.github/workflows/release.yml` builds on **windows-latest**, packs, verifies the package
+carries an Android, iOS, MacCatalyst *and* Windows target, pushes to NuGet and creates the
+GitHub release. The tag supplies the version, so the csproj and the published package
+cannot disagree.
+
+> **Pack on Windows.** The Windows target frameworks are conditioned on the host OS in the
+> csproj, so packing on macOS or Linux produces a package that quietly lacks them — which
+> would drop Windows support for anyone already using the library. The workflow fails the
+> build rather than publish such a package.
+
+Requires a `NUGET_API_KEY` repository secret (Settings → Secrets and variables → Actions).
+
 ## Changelog
 
 ### 2.1.0

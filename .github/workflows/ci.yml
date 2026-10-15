@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Windows builds every target. The Windows ones are conditioned on the host OS in
+    # the csproj, so a macOS or Linux runner would quietly produce a package missing
+    # them — which is exactly how a release can drop platform support unnoticed.
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Install MAUI workload
+        run: dotnet workload install maui --ignore-failed-sources
+
+      - name: Build library
+        run: dotnet build Src/Particle.Maui/Particle.Maui.csproj -c Release
+
+      - name: Pack (verification only)
+        run: dotnet pack Src/Particle.Maui/Particle.Maui.csproj -c Release --no-build -o artifacts
+
+      - name: Check the package carries every target
+        shell: pwsh
+        run: |
+          $pkg = Get-ChildItem artifacts/*.nupkg | Select-Object -First 1
+          Write-Host "Inspecting $($pkg.Name)"
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $zip = [System.IO.Compression.ZipFile]::OpenRead($pkg.FullName)
+          $frameworks = $zip.Entries |
+            Where-Object { $_.FullName -like 'lib/*' } |
+            ForEach-Object { ($_.FullName -split '/')[1] } |
+            Sort-Object -Unique
+          $zip.Dispose()
+          $frameworks | ForEach-Object { Write-Host "  $_" }
+          $required = @('android', 'ios', 'maccatalyst', 'windows')
+          foreach ($r in $required) {
+            if (-not ($frameworks -match $r)) {
+              throw "Package is missing a $r target — refusing to call this a good build."
+            }
+          }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: artifacts/*.nupkg
