@@ -140,6 +140,68 @@ namespace Particle.Maui
 
         public SKSize CanvasSize => _getCanvasSize();
 
+        /// <summary>
+        /// Emits a burst of particles at a point, without waiting for a touch. Use this
+        /// to drive effects from code — a celebration where the child just succeeded, a
+        /// score popping, an item being collected.
+        /// </summary>
+        /// <param name="position">Where to emit, in canvas pixels. See <see cref="CanvasSize"/>.</param>
+        /// <param name="count">How many particles to emit. Values of zero or less do nothing.</param>
+        /// <param name="moveType">
+        /// <see cref="ParticleMoveType.Radiate"/> throws them outward from the point,
+        /// <see cref="ParticleMoveType.Fall"/> drops them like confetti.
+        /// </param>
+        public void Emit(SKPoint position, int count, ParticleMoveType moveType = ParticleMoveType.Radiate)
+        {
+            if (count <= 0)
+            {
+                return;
+            }
+
+            var generator = moveType == ParticleMoveType.Fall
+                ? FallingParticleGenerator
+                : TouchParticleGenerator;
+
+            lock (_particleLock)
+            {
+                _particles.AddRange(generator.Generate(
+                    new[] {position},
+                    count,
+                    _convertedConfettiColors
+                ));
+            }
+        }
+
+        /// <summary>
+        /// Emits a burst at a point given in device-independent units — the same
+        /// coordinates layout uses — so callers do not have to convert for display scale.
+        /// </summary>
+        public void Emit(Point position, int count, ParticleMoveType moveType = ParticleMoveType.Radiate)
+            => Emit(ToCanvasPoint(position), count, moveType);
+
+        /// <summary>
+        /// Emits a burst in the middle of the view, for when the effect belongs to the
+        /// whole surface rather than to one spot in it.
+        /// </summary>
+        public void EmitAtCenter(int count, ParticleMoveType moveType = ParticleMoveType.Radiate)
+        {
+            var canvasSize = CanvasSize;
+            Emit(new SKPoint(canvasSize.Width / 2f, canvasSize.Height / 2f), count, moveType);
+        }
+
+        /// <summary>
+        /// Converts a point in device-independent units to canvas pixels. Falls back to
+        /// the given point when the view has not been laid out yet and no scale is known.
+        /// </summary>
+        private SKPoint ToCanvasPoint(Point position)
+        {
+            var width = Width;
+            var canvasWidth = CanvasSize.Width;
+            var scale = width > 0 && canvasWidth > 0 ? (float) (canvasWidth / width) : 1f;
+
+            return new SKPoint((float) position.X * scale, (float) position.Y * scale);
+        }
+
         private void OnTouch(object sender, SKTouchEventArgs e)
         {
             // ToDo: detect the finger motion to decide if valid tap or not

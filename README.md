@@ -29,6 +29,29 @@ The starting point is the class `ParticleView`.
 | `DebugInfoColor` | `LawnGreen` | Color to use when displaying debug information. |
 <br>
 
+### Emitting from code
+
+Particles normally come from touch or from the falling generator. `Emit` adds a burst
+wherever you want one, which is what you need for effects the app drives itself — a
+celebration, a score landing, an item collected.
+
+| Method | Description |
+|--------|-------------|
+| `Emit(SKPoint position, int count, ParticleMoveType moveType = Radiate)` | Burst at a point in canvas pixels. |
+| `Emit(Point position, int count, ParticleMoveType moveType = Radiate)` | Same, in device-independent units, converted for display scale. |
+| `EmitAtCenter(int count, ParticleMoveType moveType = Radiate)` | Burst in the middle of the view. |
+
+```csharp
+// celebrate where the child just finished, in layout coordinates
+MyParticleCanvas.Emit(new Point(letterCentreX, letterCentreY), 40);
+
+// or drop confetti over the whole surface
+MyParticleCanvas.EmitAtCenter(60, ParticleMoveType.Fall);
+```
+
+`AddParticlesOnTap` is not required — `Emit` works regardless, and uses `ParticleColors`
+like every other effect.
+
 These properties aren't bindable.
 
 | Property | Default | Description |
@@ -96,6 +119,9 @@ To conserve resources you can pause the particles when the `Page` is about to di
 ```
 
 ## Changelog
+
+### 2.1.0
+- Added `Emit` and `EmitAtCenter` so particles can be triggered from code, not only by touch
 
 ### 2.0.0
 - Multi-targets .NET 9 and .NET 10 with SkiaSharp 3.x

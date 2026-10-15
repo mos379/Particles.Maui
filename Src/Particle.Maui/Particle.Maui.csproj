@@ -2,7 +2,7 @@
   <PropertyGroup>
     <LangVersion>14</LangVersion>
     <PackageId>Particles.Maui</PackageId>
-    <PackageVersion>2.0.0</PackageVersion>
+    <PackageVersion>2.1.0</PackageVersion>
     <Authors>Marius Muntean (original Particle.Forms), Jeff Bowman (MAUI port), ITs4BM (.NET 9/10 maintenance)</Authors>
     <Copyright>2020 Marius Muntean, 2022 Jeff Bowman, 2026 ITs4BM</Copyright>
     <PackageProjectUrl>https://github.com/mos379/Particles.Maui</PackageProjectUrl>
