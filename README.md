@@ -52,6 +52,26 @@ MyParticleCanvas.EmitAtCenter(60, ParticleMoveType.Fall);
 `AddParticlesOnTap` is not required — `Emit` works regardless, and uses `ParticleColors`
 like every other effect.
 
+### Sending something to a target
+
+`EmitTo` flies a star from one point to another along an arc and tells you when it lands.
+Where a burst says *something happened*, this says *where it went* — points travelling to a
+score, an item to a basket.
+
+| Method | Description |
+|--------|-------------|
+| `EmitTo(SKPoint from, SKPoint to, Action onArrived = null, SKColor? color = null, float size = 14, float durationMillis = 600, float arcHeight = 0.4f)` | Canvas pixels |
+| `EmitTo(Point from, Point to, ...)` | Device-independent units |
+
+```csharp
+// a reward leaving the thing the user just finished, landing on the score
+MyParticleCanvas.EmitTo(itemCentre, scoreCounter, onArrived: () => Score += 10);
+```
+
+`onArrived` is raised on the main thread on the frame the star reaches the destination, so
+the target can react at the moment of arrival. `arcHeight` is a fraction of the distance
+travelled: `0` is a straight line, the default lobs noticeably.
+
 These properties aren't bindable.
 
 | Property | Default | Description |
@@ -157,6 +177,9 @@ Actions → Variables: `NUGET_USER`, set to your nuget.org username. It is only 
 which is why it is a variable rather than a secret.
 
 ## Changelog
+
+### 2.2.0
+- Added `EmitTo`: a star that arcs to a target and raises `Arrived` when it lands
 
 ### 2.1.0
 - Added `Emit` and `EmitAtCenter` so particles can be triggered from code, not only by touch

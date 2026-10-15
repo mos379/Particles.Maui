@@ -173,6 +173,51 @@ namespace Particle.Maui
         }
 
         /// <summary>
+        /// Sends a star arcing from one point to another and raises <paramref name="onArrived"/>
+        /// when it lands. Use it to show something being collected — points travelling to a
+        /// score, an item to a basket — where a burst would only say "something happened"
+        /// without saying where it went.
+        /// </summary>
+        /// <param name="from">Start of the flight, in canvas pixels.</param>
+        /// <param name="to">Destination, in canvas pixels.</param>
+        /// <param name="onArrived">
+        /// Raised on the frame the star reaches the destination, on the main thread, so the
+        /// target can react at the moment of arrival.
+        /// </param>
+        /// <param name="color">Star colour. Defaults to gold.</param>
+        /// <param name="size">Outer radius in canvas pixels.</param>
+        /// <param name="durationMillis">Flight time.</param>
+        /// <param name="arcHeight">
+        /// How far the flight bows, as a fraction of the distance travelled. 0 is a straight
+        /// line; the default lobs noticeably without looping.
+        /// </param>
+        public void EmitTo(SKPoint from, SKPoint to, Action onArrived = null, SKColor? color = null,
+            float size = 14f, float durationMillis = 600f, float arcHeight = 0.4f)
+        {
+            var star = new FlyingStarParticle(
+                color ?? new SKColor(0xFF, 0xD7, 0x00),
+                from, to, size, durationMillis, arcHeight);
+
+            if (onArrived != null)
+            {
+                star.Arrived += (_, _) => MainThread.BeginInvokeOnMainThread(onArrived);
+            }
+
+            lock (_particleLock)
+            {
+                _particles.Add(star);
+            }
+        }
+
+        /// <summary>
+        /// Sends a star between two points given in device-independent units — the same
+        /// coordinates layout uses.
+        /// </summary>
+        public void EmitTo(Point from, Point to, Action onArrived = null, SKColor? color = null,
+            float size = 14f, float durationMillis = 600f, float arcHeight = 0.4f)
+            => EmitTo(ToCanvasPoint(from), ToCanvasPoint(to), onArrived, color, size, durationMillis, arcHeight);
+
+        /// <summary>
         /// Emits a burst at a point given in device-independent units — the same
         /// coordinates layout uses — so callers do not have to convert for display scale.
         /// </summary>
@@ -290,10 +335,13 @@ namespace Particle.Maui
 
                 var canvasSize = CanvasSize;
 
-                // Remove those out of view
+                // Remove those out of view, and those whose life is bounded by time —
+                // a particle that flies to a target lands inside the view and would
+                // otherwise never be cleaned up.
                 lock (_particleLock)
                 {
-                    _particles.RemoveAll(particle => !SKRect.Create(SKPoint.Empty, canvasSize).Contains(SKRect.Create(particle.Position, particle.Size)));
+                    _particles.RemoveAll(particle => particle.IsFinished
+                        || !SKRect.Create(SKPoint.Empty, canvasSize).Contains(SKRect.Create(particle.Position, particle.Size)));
                 }
 
                 // Add fresh ones if not specified otherwise
