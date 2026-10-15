@@ -137,7 +137,24 @@ cannot disagree.
 > would drop Windows support for anyone already using the library. The workflow fails the
 > build rather than publish such a package.
 
-Requires a `NUGET_API_KEY` repository secret (Settings → Secrets and variables → Actions).
+### One-time setup
+
+Publishing uses NuGet **trusted publishing**, so there is no long-lived API key to store
+or rotate — the workflow proves its identity with a short-lived OIDC token issued to that
+run.
+
+On [nuget.org](https://www.nuget.org) → your account → **Trusted Publishing**, add a policy:
+
+| Field | Value |
+|---|---|
+| Repository owner | `mos379` |
+| Repository | `Particles.Maui` |
+| Workflow file | `release.yml` |
+| Environment | *(leave empty)* |
+
+Then add a repository **variable** (not a secret) under Settings → Secrets and variables →
+Actions → Variables: `NUGET_USER`, set to your nuget.org username. It is only a username,
+which is why it is a variable rather than a secret.
 
 ## Changelog
 
