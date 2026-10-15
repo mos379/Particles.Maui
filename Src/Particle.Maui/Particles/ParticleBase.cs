@@ -41,7 +41,14 @@ namespace Particle.Maui.Particles
 
         public SKPoint3 RotationSpeed { get; set; }
 
-        public SKMatrix TransformationMatrix { get; private set; }
+        public SKMatrix TransformationMatrix { get; protected set; }
+
+        /// <summary>
+        /// True once the particle has run its course and should be removed, for particles
+        /// whose life is bounded by time rather than by leaving the view. Particles that
+        /// simply travel until they are off-screen never finish.
+        /// </summary>
+        public virtual bool IsFinished => false;
 
         /// <summary>
         /// Updates the particle's position and orientation based on the given time
