@@ -118,6 +118,44 @@ To conserve resources you can pause the particles when the `Page` is about to di
         }
 ```
 
+## Releasing
+
+Tag the commit and the workflow does the rest:
+
+```bash
+git tag v2.1.0
+git push origin v2.1.0
+```
+
+`.github/workflows/release.yml` builds on **windows-latest**, packs, verifies the package
+carries an Android, iOS, MacCatalyst *and* Windows target, pushes to NuGet and creates the
+GitHub release. The tag supplies the version, so the csproj and the published package
+cannot disagree.
+
+> **Pack on Windows.** The Windows target frameworks are conditioned on the host OS in the
+> csproj, so packing on macOS or Linux produces a package that quietly lacks them — which
+> would drop Windows support for anyone already using the library. The workflow fails the
+> build rather than publish such a package.
+
+### One-time setup
+
+Publishing uses NuGet **trusted publishing**, so there is no long-lived API key to store
+or rotate — the workflow proves its identity with a short-lived OIDC token issued to that
+run.
+
+On [nuget.org](https://www.nuget.org) → your account → **Trusted Publishing**, add a policy:
+
+| Field | Value |
+|---|---|
+| Repository owner | `mos379` |
+| Repository | `Particles.Maui` |
+| Workflow file | `release.yml` |
+| Environment | *(leave empty)* |
+
+Then add a repository **variable** (not a secret) under Settings → Secrets and variables →
+Actions → Variables: `NUGET_USER`, set to your nuget.org username. It is only a username,
+which is why it is a variable rather than a secret.
+
 ## Changelog
 
 ### 2.1.0

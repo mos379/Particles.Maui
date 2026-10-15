@@ -1,0 +1,99 @@
+name: Release
+
+# Tag a commit to release it:  git tag v2.1.0 && git push origin v2.1.0
+# The tag is the single source of truth for the version — the csproj value is
+# overridden below, so the two can never disagree in a published package.
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish, without the leading v (e.g. 2.1.0)'
+        required: true
+
+jobs:
+  release:
+    # Must be Windows: the Windows target frameworks are conditioned on the host OS,
+    # so packing anywhere else silently ships a package without them and takes
+    # Windows support away from anyone already using the library.
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+      # Required for NuGet trusted publishing: the job proves who it is with a
+      # short-lived OIDC token instead of carrying a long-lived API key.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Work out the version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Publishing $VERSION"
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Install MAUI workload
+        run: dotnet workload install maui --ignore-failed-sources
+
+      - name: Build
+        run: dotnet build Src/Particle.Maui/Particle.Maui.csproj -c Release -p:PackageVersion=${{ steps.version.outputs.version }}
+
+      - name: Pack
+        run: dotnet pack Src/Particle.Maui/Particle.Maui.csproj -c Release --no-build -o artifacts -p:PackageVersion=${{ steps.version.outputs.version }}
+
+      - name: Check the package carries every target
+        shell: pwsh
+        run: |
+          $pkg = Get-ChildItem artifacts/*.nupkg | Select-Object -First 1
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $zip = [System.IO.Compression.ZipFile]::OpenRead($pkg.FullName)
+          $frameworks = $zip.Entries |
+            Where-Object { $_.FullName -like 'lib/*' } |
+            ForEach-Object { ($_.FullName -split '/')[1] } |
+            Sort-Object -Unique
+          $zip.Dispose()
+          $frameworks | ForEach-Object { Write-Host "  $_" }
+          foreach ($r in @('android', 'ios', 'maccatalyst', 'windows')) {
+            if (-not ($frameworks -match $r)) {
+              throw "Package is missing a $r target — refusing to publish it."
+            }
+          }
+
+      # Exchanges this run's OIDC token for an API key that lives minutes, not years.
+      # Requires a trusted publishing policy on nuget.org naming this repository and
+      # this workflow file — see the README.
+      - name: Log in to NuGet
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: Publish to NuGet
+        shell: bash
+        run: |
+          dotnet nuget push artifacts/*.nupkg \
+            --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Create the GitHub release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.nupkg
+          generate_release_notes: true
